@@ -12,6 +12,8 @@ The simulation and training backend is based on **mjlab**.
 
 A demo of the pretrained policy, showing one model generalizing across diverse and highly dynamic motions, is available [here](https://motion-tracking.axell.top).
 
+https://github.com/user-attachments/assets/263dd3cc-8d23-4d67-bd36-37fe89f525de
+
 https://github.com/user-attachments/assets/4d210dbf-8023-4270-b094-ab6a2353deda
 
 Instructions for deployment and runtime usage are available in the [`sim2real`](./sim2real) folder.
