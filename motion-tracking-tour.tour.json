@@ -1,0 +1,373 @@
+{
+  "id": "motion-tracking-onboarding",
+  "title": "Whole-Body Motion Tracking for Unitree G1",
+  "description": "A guided tour of the motion tracking system that trains, evaluates, and deploys whole-body motion tracking policies for the Unitree G1 humanoid robot, with compliance-aware behavior and VR teleoperation support.",
+  "version": "1.0.0",
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Project Overview",
+      "description": "This codebase implements a full pipeline for humanoid robot motion tracking: from training reinforcement learning policies in simulation (active_adaptation/) to deploying them on real hardware (sim2real/). Configuration is managed through Hydra YAML files (cfg/), and standalone scripts handle data processing and evaluation (scripts/).",
+      "focusDirectory": "",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "core-dirs",
+          "name": "Core Components",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "active_adaptation", "type": "directory" },
+            { "path": "sim2real", "type": "directory" },
+            { "path": "cfg", "type": "directory" },
+            { "path": "scripts", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "training-core",
+      "title": "Training & Simulation Core",
+      "description": "The active_adaptation/ directory is the heart of the system. It contains the RL environment (envs/), the PPO learning algorithm (learning/), robot model assets (assets/), and utility modules for motion processing, kinematics, and experiment tracking (utils/). Training runs across multiple GPUs using TorchRL and mjlab for MuJoCo physics simulation.",
+      "focusDirectory": "active_adaptation",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "env-system",
+          "name": "Environment",
+          "color": "#22c55e",
+          "items": [
+            { "path": "active_adaptation/envs", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "learning-system",
+          "name": "Learning Algorithm",
+          "color": "#a855f7",
+          "items": [
+            { "path": "active_adaptation/learning", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "utils-system",
+          "name": "Utilities",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "active_adaptation/utils", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "environment-mdp",
+      "title": "Environment & MDP Structure",
+      "description": "The environment is built on mjlab and follows a modular MDP (Markov Decision Process) structure. base.py wraps the physics simulator with observation groups and action application. The mdp/ subdirectory breaks down the RL problem into composable pieces: observations, rewards, randomizations, terminations, actions, and motion tracking commands with compliance awareness.",
+      "focusDirectory": "active_adaptation/envs",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "base-env",
+          "name": "Base Environment",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "active_adaptation/envs/base.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "mdp-components",
+          "name": "MDP Components",
+          "color": "#ef4444",
+          "items": [
+            { "path": "active_adaptation/envs/mdp", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "View the base environment implementation",
+          "target": "active_adaptation/envs/base.py"
+        }
+      ]
+    },
+    {
+      "id": "mdp-details",
+      "title": "MDP Components Deep Dive",
+      "description": "Each MDP component is a self-contained module. observations.py extracts policy inputs (gravity, joint history, compliance flags). rewards/locomotion.py defines multi-objective rewards for tracking accuracy and locomotion quality. randomizations.py applies domain randomization (friction, mass, motor params) for sim-to-real transfer. commands/motion_tracking.py manages reference motion trajectories with compliance detection.",
+      "focusDirectory": "active_adaptation/envs/mdp",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "observations",
+          "name": "Observations",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "active_adaptation/envs/mdp/observations.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "rewards",
+          "name": "Rewards",
+          "color": "#22c55e",
+          "items": [
+            { "path": "active_adaptation/envs/mdp/rewards", "type": "directory" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "randomization",
+          "name": "Domain Randomization",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "active_adaptation/envs/mdp/randomizations.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "commands",
+          "name": "Motion Commands",
+          "color": "#a855f7",
+          "items": [
+            { "path": "active_adaptation/envs/mdp/commands", "type": "directory" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "learning-algorithm",
+      "title": "PPO Learning Algorithm",
+      "description": "The learning system implements Proximal Policy Optimization (PPO) with distributed multi-GPU support. ppo.py contains the core training loop with GAE advantage estimation and value normalization. common.py defines the neural network architecture (MLP-based policy and value networks). Supporting modules handle custom distributions, ensemble methods, and uncertainty estimation via evidential learning.",
+      "focusDirectory": "active_adaptation/learning",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "ppo-core",
+          "name": "PPO Core",
+          "color": "#a855f7",
+          "items": [
+            { "path": "active_adaptation/learning/ppo/ppo.py", "type": "file" },
+            { "path": "active_adaptation/learning/ppo/common.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "learning-utils",
+          "name": "Training Utilities",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "active_adaptation/learning/utils", "type": "directory" },
+            { "path": "active_adaptation/learning/modules", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "View the PPO training loop",
+          "target": "active_adaptation/learning/ppo/ppo.py"
+        }
+      ]
+    },
+    {
+      "id": "motion-utilities",
+      "title": "Motion Processing & Kinematics",
+      "description": "The utils/ directory handles motion data and kinematics. motion.py defines MotionData and MotionDataset classes for lazy-loading memory-mapped motion clips. fk_helper.py computes forward kinematics for body part positions. multimotion.py manages multi-clip datasets mixing AMASS, LAFAN, 100style, and real VR captures. wandb.py integrates W&B for experiment tracking and checkpoint management.",
+      "focusDirectory": "active_adaptation/utils",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "motion-data",
+          "name": "Motion Data",
+          "color": "#ef4444",
+          "items": [
+            { "path": "active_adaptation/utils/motion.py", "type": "file" },
+            { "path": "active_adaptation/utils/multimotion.py", "type": "file" },
+            { "path": "active_adaptation/utils/simple_multimotion.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "kinematics",
+          "name": "Kinematics",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "active_adaptation/utils/fk_helper.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "configuration",
+      "title": "Hydra Configuration System",
+      "description": "Training is configured through a hierarchical Hydra YAML system. train.yaml is the entry point. Task configs in task/G1/ define the full MDP: action space, observation space, reward functions, randomization, and dataset mixing. Experiment configs in exp/ override parameters for each training phase (train -> adapt -> finetune), enabling a 3-phase curriculum of 8B + 1B + 1B frames.",
+      "focusDirectory": "cfg",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "entry-configs",
+          "name": "Entry Points",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "cfg/train.yaml", "type": "file" },
+            { "path": "cfg/eval.yaml", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "task-configs",
+          "name": "Task Definitions",
+          "color": "#22c55e",
+          "items": [
+            { "path": "cfg/task", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "exp-configs",
+          "name": "Experiment Phases",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "cfg/exp", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "deployment",
+      "title": "Sim2Real Deployment",
+      "description": "The sim2real/ directory is a standalone runtime for deploying trained policies. deploy.py is the main controller running at 50Hz. policy.py wraps ONNX inference. Motion can come from UDP (offline clips via motion_select.py) or VR teleoperation (via teleop/ ZMQ bridge). sim2sim.py tests the policy in MuJoCo before going to real hardware. The common/ directory handles joint mapping between simulator and real robot coordinate spaces.",
+      "focusDirectory": "sim2real",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "deployment-core",
+          "name": "Deployment Core",
+          "color": "#ef4444",
+          "items": [
+            { "path": "sim2real/src/deploy.py", "type": "file" },
+            { "path": "sim2real/src/policy.py", "type": "file" },
+            { "path": "sim2real/src/sim2sim.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "motion-input",
+          "name": "Motion Sources",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "sim2real/src/motion_sources.py", "type": "file" },
+            { "path": "sim2real/src/motion_select.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "teleop",
+          "name": "VR Teleoperation",
+          "color": "#a855f7",
+          "items": [
+            { "path": "sim2real/teleop", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "View the main deployment controller",
+          "target": "sim2real/src/deploy.py"
+        }
+      ]
+    },
+    {
+      "id": "scripts-workflow",
+      "title": "Training Scripts & Data Pipeline",
+      "description": "scripts/train.py is the main training entry point, launched via torchrun for multi-GPU training. scripts/eval.py handles evaluation and ONNX export. The data_process/ directory converts retargeted motion captures (AMASS, LAFAN) into memory-mapped training datasets. train.sh orchestrates the full 3-phase training pipeline: train (8B frames) -> adapt (1B) -> finetune (1B).",
+      "focusDirectory": "scripts",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "entry-scripts",
+          "name": "Entry Points",
+          "color": "#22c55e",
+          "items": [
+            { "path": "scripts/train.py", "type": "file" },
+            { "path": "scripts/eval.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "data-pipeline",
+          "name": "Data Processing",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "scripts/data_process", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "full-picture",
+      "title": "The Complete Pipeline",
+      "description": "The full workflow: (1) Process motion capture datasets into training data, (2) Train PPO policies in mjlab simulation with domain randomization across 3 phases, (3) Export trained policies to ONNX, (4) Test in sim2sim, (5) Deploy to the real Unitree G1 robot at 50Hz with either offline motion clips or live VR teleoperation. The compliance-aware system enables safe, contact-rich whole-body interaction.",
+      "focusDirectory": "",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "training-pipeline",
+          "name": "Training Pipeline",
+          "color": "#22c55e",
+          "items": [
+            { "path": "active_adaptation", "type": "directory" },
+            { "path": "cfg", "type": "directory" },
+            { "path": "scripts", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "deployment-pipeline",
+          "name": "Deployment Runtime",
+          "color": "#ef4444",
+          "items": [
+            { "path": "sim2real", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        }
+      ]
+    }
+  ]
+}
