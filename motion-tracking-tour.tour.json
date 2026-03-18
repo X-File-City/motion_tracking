@@ -7,7 +7,7 @@
     {
       "id": "overview",
       "title": "Project Overview",
-      "description": "This codebase implements a full pipeline for humanoid robot motion tracking: from training reinforcement learning policies in simulation (active_adaptation/) to deploying them on real hardware (sim2real/). Configuration is managed through Hydra YAML files (cfg/), and standalone scripts handle data processing and evaluation (scripts/).",
+      "description": "This codebase implements a full pipeline for humanoid robot motion tracking: from training reinforcement learning policies in simulation to deploying them on real hardware. Configuration is managed through Hydra YAML files, and standalone scripts handle data processing and evaluation.",
       "focusDirectory": "",
       "colorMode": "fileTypes",
       "highlightLayers": [
@@ -29,7 +29,7 @@
     {
       "id": "training-core",
       "title": "Training & Simulation Core",
-      "description": "The active_adaptation/ directory is the heart of the system. It contains the RL environment (envs/), the PPO learning algorithm (learning/), robot model assets (assets/), and utility modules for motion processing, kinematics, and experiment tracking (utils/). Training runs across multiple GPUs using TorchRL and mjlab for MuJoCo physics simulation.",
+      "description": "This is the heart of the system. It contains the RL environment, the PPO learning algorithm, robot model assets, and utility modules for motion processing, kinematics, and experiment tracking. Training runs across multiple GPUs using TorchRL and mjlab for MuJoCo physics simulation.",
       "focusDirectory": "active_adaptation",
       "colorMode": "fileTypes",
       "highlightLayers": [
